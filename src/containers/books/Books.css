@@ -83,8 +83,9 @@
 
 }
 
-.Books .floating-btn{
+.Books .floating-btn {
     border-radius: 50% ;
+    text-decoration: none;
     border: 1px solid #ff5483;
     display: flex;
     flex-direction:column;
@@ -98,4 +99,13 @@
     position: fixed;
     bottom: 20px;
     right: 20px;
+    box-shadow: 12px 15px 20px 0 rgba(46, 61, 73, 0.15);
+
+}
+.Books .floating-btn:hover, .floating-btn:focus {
+    background-color: #cc4368;
+    color: #fff;
+    border: 1px solid #cc4368;
+    box-shadow: 12px 15px 20px 0 rgba(46, 61, 73, 0.15);
+    cursor: pointer;
 }
