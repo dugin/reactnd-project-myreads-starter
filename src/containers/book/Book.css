@@ -1,0 +1,90 @@
+.Book {
+    box-shadow: 12px 15px 20px 0 rgba(46, 61, 73, 0.15);
+    margin: 5px;
+}
+@media (min-width: 576px) {
+    .Book{
+        flex: 0 0 calc(50% - 10px) !important;
+    }
+}
+
+@media (min-width: 767px) {
+    .Book {
+        flex: 0 0 calc(33.33% - 10px) !important;
+    }
+}
+@media (min-width: 992px) {
+    .Book {
+        flex: 0 0 calc(25% - 10px) !important;
+    }
+}
+
+@media (min-width: 1200px) {
+    .Book {
+        flex: 0 0 calc(20% - 10px) !important;
+    }
+}
+
+.Book .img-container {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+.Book .card-text span{
+    font-size: 13px;
+    color: gray;
+}
+.Book .card-img-top {
+    height: 200px;
+    width: 130px;
+
+}
+
+.Book .card-link {
+    font-size: 12px;
+}
+
+.Book .card-footer{
+    width: calc(100% + 30px);
+    margin-left: -15px;
+    padding-left: 35px;
+}
+
+.Book  .card-footer-options {
+    color: #ff5483 !important;
+    font-size: 12px;
+    background-color: transparent;
+    border: none;
+    padding: 0;
+}
+
+.Book  .card-footer-options:hover, .card-footer-options:focus{
+    cursor: pointer;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.Book .card-link-title {
+    padding-top: 15px;
+    border-top: 1px solid #e8e8e8;
+    color: #939393;
+    font-size: 12px;
+}
+
+.Book .card-link-wrapper{
+    margin-left: -5px;
+}
+.Book .btn-outline-primary {
+    font-size: 12px;
+    color: #ff5483;
+    border: 1px solid #ff5483;
+    margin: 5px;
+}
+.Book .btn-outline-primary:hover{
+    background-color: #ff5483;
+    color: #fff;
+    border: 1px solid #ff5483;
+    cursor: pointer;
+
+}

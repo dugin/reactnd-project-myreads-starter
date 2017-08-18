@@ -9,7 +9,7 @@ const Header = (props) => {
     return (<nav className="navbar Header">
         {props.route.localeCompare('/') !== 0 && (
             <Link to="/"> <i className="fa fa-arrow-left" aria-hidden="true"/></Link>)}
-        <div className="container pl-md-0  ">
+        <div className="container">
             <a className="navbar-brand">
                 <img src={udacityImg} height="30" alt="udacity logo"/>
             </a>
