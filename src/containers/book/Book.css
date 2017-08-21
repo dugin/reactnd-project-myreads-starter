@@ -25,20 +25,43 @@
     }
 }
 
+.Book .badge{
+    width: calc(100% + 30px);
+    margin-left: -15px;
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+}
+
 .Book .img-container {
     margin-top: 20px;
     display: flex;
     justify-content: center;
 }
-.Book .card-text span{
-    font-size: 13px;
-    color: gray;
+.Book .card-text, .card-text span{
+    font-size: 12px;
+    color: rgba(0,0,0,.4);
 }
 .Book .card-img-top {
     height: 200px;
     width: 130px;
 
 }
+
+.Book .card-body{
+    padding: 15px 0;
+    text-align: center;
+
+}
+
+.Book .card-subtitle{
+    text-align: center;
+
+    font-size: 14px;
+    margin: 5px 0;
+    color: rgba(0,0,0,.7);
+}
+
+
 
 .Book .card-link {
     font-size: 12px;
@@ -47,7 +70,9 @@
 .Book .card-footer{
     width: calc(100% + 30px);
     margin-left: -15px;
-    padding-left: 35px;
+    padding-left: 15px;
+    display: flex;
+    justify-content: center;
 }
 
 .Book  .card-footer-options {
@@ -70,6 +95,7 @@
     border-top: 1px solid #e8e8e8;
     color: #939393;
     font-size: 12px;
+    text-align: center;
 }
 
 .Book .card-link-wrapper{

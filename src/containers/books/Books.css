@@ -4,23 +4,36 @@
     color: #02b3e4;
 }
 
-.Books .group-title{
+.Books .group-title {
     padding-bottom: 10px;
     margin-bottom: 10px;
     border-bottom: 1px solid #e8e8e8;
 
 }
 
+.Books {
+    min-height: calc(100vh - 150px);
+}
+
+
+.Books .Loader {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 80px;
+}
+
 .Books .floating-btn {
-    border-radius: 50% ;
+    border-radius: 50%;
     text-decoration: none;
     border: 1px solid #ff5483;
     display: flex;
-    flex-direction:column;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     font-size: 26px;
-    height:  60px;
+    height: 60px;
     width: 60px;
     background-color: #ff5483;
     color: #fff;
@@ -30,6 +43,7 @@
     box-shadow: 12px 15px 20px 0 rgba(46, 61, 73, 0.15);
 
 }
+
 .Books .floating-btn:hover, .floating-btn:focus {
     background-color: #cc4368;
     color: #fff;
