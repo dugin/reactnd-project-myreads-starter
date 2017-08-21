@@ -1,6 +1,7 @@
 import {Dropdown, DropdownToggle, DropdownMenu, Badge, DropdownItem} from 'reactstrap';
 import React from 'react';
 import './Book.css';
+import PropTypes from 'prop-types';
 
 
 class Book extends React.Component {
@@ -70,5 +71,12 @@ class Book extends React.Component {
         )
     }
 }
+
+Book.propTypes = {
+    book:  PropTypes.object.isRequired,
+    shelfCategories: PropTypes.array.isRequired,
+    updateBook: PropTypes.func,
+    index: PropTypes.number.isRequired
+};
 
 export default Book;

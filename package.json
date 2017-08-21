@@ -3,7 +3,7 @@
     "bootstrap": "^4.0.0-beta",
     "font-awesome": "^4.7.0",
     "form-serialize": "^0.7.2",
-    "prop-types": "^15.5.8",
+    "prop-types": "^15.5.10",
     "react": "^15.6.1",
     "react-addons-css-transition-group": "^15.6.0",
     "react-addons-transition-group": "^15.6.0",

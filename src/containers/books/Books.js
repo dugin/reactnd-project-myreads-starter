@@ -4,7 +4,7 @@ import {getAll, update} from "../../api/BooksAPI";
 import {Link} from 'react-router-dom';
 import Book from "../book/Book";
 import {categories} from "../../utils/constants";
-import Loader from '../../components/loader/Loader'
+import Loader from '../../components/loader/Loader';
 
 class Books extends React.Component {
 
@@ -20,17 +20,15 @@ class Books extends React.Component {
     getAllBooks = () => {
         getAll()
             .then(val => {
-               this.setState({books: val, isLoading: false});
-                console.log(val);
+                this.setState({books: val, isLoading: false});
+                this.props.shelfBooks(val);
             });
     };
 
     updateBook = (book, shelf) => {
-
         update(book, shelf)
             .then(this.getAllBooks)
-
-    }
+    };
 
     render() {
         return (
@@ -41,25 +39,26 @@ class Books extends React.Component {
                 </div>
 
                 <div className="books-container">
-                {this.state.isLoading ? (
-                        <Loader/>
-                    ) :
-                    (categories.map(category => (
-                    <div key={category.type}>
-                        <h3 className="mt-4 group-title"> {category.name}</h3>
-                        <div className="row mx-0  mt-4">
-                            {this.state.books
-                                .filter(book => book.shelf.localeCompare(category.type) === 0)
-                                .map((book, z) => (
-                                    <Book key={z} book={book}
-                                          shelfCategories={categories}
-                                          updateBook={this.updateBook}
-                                          index={z}/>
-                                ))}
-                        </div>
-                    </div>
-                ))
-                )}
+                    {this.state.isLoading ? (
+                            <Loader/>
+                        ) :
+                        (categories.map(category => (
+                                <div key={category.type}>
+                                    <h3 className="mt-4 group-title"> {category.name}</h3>
+                                    <div className="row mx-0  mt-4">
+                                        {this.state.books
+                                            .filter(book => book.shelf.localeCompare(category.type) === 0)
+                                            .map((book, z) => (
+                                                <Book key={z}
+                                                      book={book}
+                                                      shelfCategories={categories}
+                                                      updateBook={this.updateBook}
+                                                      index={z}/>
+                                            ))}
+                                    </div>
+                                </div>
+                            ))
+                        )}
                 </div>
 
                 <Link to="/search" className="floating-btn">+</Link>

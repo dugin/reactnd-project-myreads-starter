@@ -10,10 +10,9 @@ class BooksApp extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {route: window.location.pathname};
+        this.state = {route: window.location.pathname, shelfBooks:[]};
 
         this.props.history.listen((location, action) => {
-
             this.setState({route: location.pathname})
         });
     }
@@ -22,8 +21,14 @@ class BooksApp extends React.Component {
         return (
             <div className="app">
                 <Header route={this.state.route}/>
-                <Route exact path="/" component={Books}/>
-                <Route path="/search" component={Search}/>
+                <Route exact path="/" render={()=>(
+                    <Books
+                        shelfBooks={(books) => this.setState({shelfBooks: books})}
+                    />
+                )}/>
+                <Route path="/search" render={()=>(
+                    <Search shelfBooks={this.state.shelfBooks}/>
+                )}/>
                 <Footer/>
             </div>
         )
