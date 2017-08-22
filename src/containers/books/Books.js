@@ -1,10 +1,11 @@
 import React from 'react';
 import './Books.css';
-import {getAll, update} from "../../api/BooksAPI";
+import * as BooksAPI from "../../api/BooksAPI";
 import {Link} from 'react-router-dom';
 import Book from "../book/Book";
 import {categories} from "../../utils/constants";
 import Loader from '../../components/loader/Loader';
+
 
 class Books extends React.Component {
 
@@ -18,16 +19,24 @@ class Books extends React.Component {
     }
 
     getAllBooks = () => {
-        getAll()
+        BooksAPI.getAll()
             .then(val => {
                 this.setState({books: val, isLoading: false});
                 this.props.shelfBooks(val);
+                console.log(val);
             });
     };
 
     updateBook = (book, shelf) => {
-        update(book, shelf)
-            .then(this.getAllBooks)
+        BooksAPI.update(book, shelf)
+            .then(() => {
+
+                book.shelf = shelf;
+
+                this.setState(state => ({
+                    books: state.books.map(b => b.id.localeCompare(book.id) === 0 ? book : b)
+                }));
+            })
     };
 
     render() {

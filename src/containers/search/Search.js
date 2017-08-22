@@ -2,10 +2,11 @@ import React from 'react';
 import './Search.css';
 import Book from "../book/Book";
 import Loader from '../../components/loader/Loader'
+import * as BooksAPI from "../../api/BooksAPI";
+import cloneDeep from 'lodash/cloneDeep';
 
-const arrowImg = require('../../assets/icons/arrow-back.svg');
-import {search, getAll} from "../../api/BooksAPI";
 import {categories} from "../../utils/constants";
+import update from 'immutability-helper';
 
 
 class Search extends React.Component {
@@ -23,8 +24,8 @@ class Search extends React.Component {
     }
 
     checkShelfBooks() {
-        if (!this.shelfBooks)
-            getAll()
+        if (this.shelfBooks.length === 0)
+            BooksAPI.getAll()
                 .then(val => {
                     this.shelfBooks = val;
                 })
@@ -52,14 +53,47 @@ class Search extends React.Component {
             }, 500);
     };
 
+    isBookOnShelf(book) {
+        let isOnShelf = false;
+
+        this.shelfBooks.map(b => {
+            if (b.id === book.id) {
+                isOnShelf = true;
+                return book;
+            }
+            return b;
+        });
+
+        if (!isOnShelf)
+            this.shelfBooks.push(book);
+    }
+
+    updateBook = (book, shelf) => {
+        BooksAPI.update(book, shelf)
+            .then(() => {
+
+                this.setState(state => ({
+                    books: state.books.map(b => {
+                        if (b.id.localeCompare(book.id) === 0) {
+                            console.log(Object.assign({}, b, {shelf}));
+                            return Object.assign({}, b, {shelf})
+                        }
+                        return b;
+                    })
+                }), ()=>{
+                    console.log(this.state.books);
+                });
+
+            })
+    };
+
     getBooks(query) {
-        search(query)
+        BooksAPI.search(query)
             .then(response => {
                 response.error ? this.setState({books: [], error: response.error}) : this.setState({books: response});
 
                 this.setState({isLoading: false});
             })
-
     }
 
     render() {
@@ -78,7 +112,11 @@ class Search extends React.Component {
                         <div className="row mx-0  mt-4">
                             {this.state.books.length > 0 ? (
                                 this.state.books.map((book, z) => (
-                                    <Book key={z} book={this.checkBooks(book)} shelfCategories={categories} index={z}/>
+                                    <Book key={z}
+                                          book={this.checkBooks(book)}
+                                          shelfCategories={categories}
+                                          updateBook={this.updateBook}
+                                          index={z}/>
                                 ))
                             ) : this.state.error.length > 0 && ( <h1> No results</h1>)}
                         </div>
