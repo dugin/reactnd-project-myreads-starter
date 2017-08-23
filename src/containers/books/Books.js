@@ -34,7 +34,7 @@ class Books extends React.Component {
                 book.shelf = shelf;
 
                 this.setState(state => ({
-                    books: state.books.map(b => b.id.localeCompare(book.id) === 0 ? book : b)
+                    books: state.books.map(b => b.id === book.id ? book : b)
                 }));
             })
     };

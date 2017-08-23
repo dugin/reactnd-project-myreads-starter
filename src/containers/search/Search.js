@@ -3,11 +3,7 @@ import './Search.css';
 import Book from "../book/Book";
 import Loader from '../../components/loader/Loader'
 import * as BooksAPI from "../../api/BooksAPI";
-import cloneDeep from 'lodash/cloneDeep';
-
 import {categories} from "../../utils/constants";
-import update from 'immutability-helper';
-
 
 class Search extends React.Component {
 
@@ -53,36 +49,31 @@ class Search extends React.Component {
             }, 500);
     };
 
-    isBookOnShelf(book) {
+    isBookOnShelf(book, shelf) {
         let isOnShelf = false;
 
-        this.shelfBooks.map(b => {
+        this.shelfBooks = this.shelfBooks.map(b => {
             if (b.id === book.id) {
                 isOnShelf = true;
-                return book;
+                return {...b, shelf};
             }
             return b;
         });
 
         if (!isOnShelf)
-            this.shelfBooks.push(book);
+            this.shelfBooks.push({...book, shelf});
+
     }
 
     updateBook = (book, shelf) => {
         BooksAPI.update(book, shelf)
             .then(() => {
 
+                this.isBookOnShelf(book, shelf);
+
                 this.setState(state => ({
-                    books: state.books.map(b => {
-                        if (b.id.localeCompare(book.id) === 0) {
-                            console.log(Object.assign({}, b, {shelf}));
-                            return Object.assign({}, b, {shelf})
-                        }
-                        return b;
-                    })
-                }), ()=>{
-                    console.log(this.state.books);
-                });
+                    books: state.books.map(b => b.id === book.id ? {...b, shelf} : b)
+                }));
 
             })
     };

@@ -11,12 +11,15 @@ class Book extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {isOpen: [], category: this.getCategory()};
+        this.state = {isOpen: [], category: this.getCategory(this.props.shelfCategories, this.props.book.shelf)};
     }
 
+    componentWillReceiveProps(nextProps) {
+        this.setState({category: this.getCategory(nextProps.shelfCategories, nextProps.book.shelf)})
+    }
 
-    getCategory() {
-        return this.props.shelfCategories.filter(category => category.type.localeCompare(this.props.book.shelf) === 0)[0];
+    getCategory(shelfCategories, shelf) {
+        return shelfCategories.filter(category => category.type.localeCompare(shelf) === 0)[0];
     }
 
     toggle = (id) => {
