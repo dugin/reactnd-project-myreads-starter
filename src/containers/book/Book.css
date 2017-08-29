@@ -43,6 +43,7 @@
 }
 .Book .card-img-top {
     height: 200px;
+    max-width: 180px;
 }
 
 .Book .card-body{
@@ -75,10 +76,20 @@
 
 .Book  .card-footer-options {
     color: #ff5483 !important;
-    font-size: 12px;
+    font-size: 13px;
     background-color: transparent;
     border: none;
     padding: 0;
+}
+
+.Book .btn-outline-warning{
+    padding: 0 10px;
+    margin-top: 3px;
+    margin-right: 20px;
+    font-size: 13px;
+}
+.Book .btn-outline-warning:hover{
+    cursor: pointer;
 }
 
 .Book  .card-footer-options:hover, .card-footer-options:focus{

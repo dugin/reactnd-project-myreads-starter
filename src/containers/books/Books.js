@@ -5,6 +5,7 @@ import {Link} from 'react-router-dom';
 import Book from "../book/Book";
 import {categories} from "../../utils/constants";
 import Loader from '../../components/loader/Loader';
+import PropTypes from 'prop-types';
 
 
 class Books extends React.Component {
@@ -15,15 +16,22 @@ class Books extends React.Component {
     }
 
     componentDidMount() {
-        this.getAllBooks();
+        if (!this.props.updatedShelf || this.props.updatedShelf.length === 0)
+            this.getAllBooks();
+
+        else
+            this.init(this.props.updatedShelf);
+    }
+
+    init(val) {
+        this.setState({books: val, isLoading: false});
+        this.props.shelfBooks(val);
     }
 
     getAllBooks = () => {
         BooksAPI.getAll()
             .then(val => {
-                this.setState({books: val, isLoading: false});
-                this.props.shelfBooks(val);
-                console.log(val);
+                this.init(val);
             });
     };
 
@@ -76,5 +84,10 @@ class Books extends React.Component {
         )
     }
 }
+
+Books.propTypes = {
+    shelfBooks: PropTypes.func,
+    updatedShelf: PropTypes.array,
+};
 
 export default Books;

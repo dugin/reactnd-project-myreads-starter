@@ -2,7 +2,7 @@ import {Dropdown, DropdownToggle, DropdownMenu, Badge, DropdownItem} from 'react
 import React from 'react';
 import './Book.css';
 import PropTypes from 'prop-types';
-
+import Rating from './../rating/Rating';
 const noImage = require('../../assets/images/default-no-image.png');
 
 
@@ -11,7 +11,7 @@ class Book extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {isOpen: [], category: this.getCategory(this.props.shelfCategories, this.props.book.shelf)};
+        this.state = {isOpen: [], category: this.getCategory(this.props.shelfCategories, this.props.book.shelf), isRatingOpened: false};
     }
 
     componentWillReceiveProps(nextProps) {
@@ -28,6 +28,15 @@ class Book extends React.Component {
                 [id]: typeof  this.state.isOpen[id] === 'undefined' ? true : !this.state.isOpen[id]
             }
         });
+    };
+
+    openRating = () =>{
+      this.setState({isRatingOpened: !this.state.isRatingOpened})
+    };
+
+    checkCategory = () => {
+        return this.state.category.type.localeCompare('read') === 0 ||
+            this.state.category.type.localeCompare('currentlyReading') === 0;
     };
 
     updateBook = (book, shelf) => {
@@ -56,10 +65,13 @@ class Book extends React.Component {
                               key={i}>{author}{i !== this.props.book.authors.length - 1 && ', '} </span>))} </p>
                 </div>
                 <div className="card-footer">
+                    {this.checkCategory() && (
+                        <button onClick={this.openRating} className="btn btn-outline-warning"> Rate it!</button>
+                    )}
                     <Dropdown isOpen={this.state.isOpen[this.props.index]}
                               toggle={() => this.toggle(this.props.index)}>
                         <DropdownToggle className="card-footer-options" caret>
-                            Options
+                            Move to...
                         </DropdownToggle>
                         <DropdownMenu className={this.state.isOpen[this.props.index] ? "show" : ""}>
                             {this.props.shelfCategories.map(category => (
@@ -74,6 +86,11 @@ class Book extends React.Component {
                         </DropdownMenu>
                     </Dropdown>
                 </div>
+                {this.state.isRatingOpened ?
+                    <Rating className="Rating" book={this.props.book}
+                        onCloseModal={() => this.setState({isRatingOpened: false})} /> :
+                    null
+                }
             </div>
 
         )

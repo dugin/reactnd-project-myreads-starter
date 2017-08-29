@@ -24,10 +24,14 @@ class BooksApp extends React.Component {
                 <Route exact path="/" render={()=>(
                     <Books
                         shelfBooks={(books) => this.setState({shelfBooks: books})}
+                        updatedShelf={this.state.shelfBooks}
+
                     />
                 )}/>
                 <Route path="/search" render={()=>(
-                    <Search shelfBooks={this.state.shelfBooks}/>
+                    <Search shelfBooks={this.state.shelfBooks}
+                            updatedShelf={(books) => this.setState({shelfBooks: books})}
+                    />
                 )}/>
                 <Footer/>
             </div>

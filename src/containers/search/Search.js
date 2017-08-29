@@ -4,6 +4,8 @@ import Book from "../book/Book";
 import Loader from '../../components/loader/Loader'
 import * as BooksAPI from "../../api/BooksAPI";
 import {categories} from "../../utils/constants";
+import debounce from 'lodash/debounce';
+import PropTypes from 'prop-types';
 
 class Search extends React.Component {
 
@@ -13,6 +15,7 @@ class Search extends React.Component {
         this.state = {books: [], error: '', isLoading: false};
 
         this.shelfBooks = props.shelfBooks;
+
     }
 
     componentDidMount() {
@@ -37,16 +40,19 @@ class Search extends React.Component {
             )[0] || book;
     };
 
+    componentWillMount() {
+        this.onSearch = debounce(this.onSearch, 600);
+        this.props.updatedShelf( this.props.shelfBooks);
+    }
+
     onTyping = (e) => {
-        const val = e.target.value;
+        if (e.target.value.length > 0)
+            this.onSearch(e.target.value)
+    };
 
-        clearTimeout(this.timeout);
-
-        if (val.length > 0)
-            this.timeout = setTimeout(() => {
-                this.setState({isLoading: true});
-                this.getBooks(val);
-            }, 500);
+    onSearch = (val) => {
+        this.setState({isLoading: true});
+        this.getBooks(val);
     };
 
     isBookOnShelf(book, shelf) {
@@ -63,6 +69,7 @@ class Search extends React.Component {
         if (!isOnShelf)
             this.shelfBooks.push({...book, shelf});
 
+        this.props.updatedShelf(this.shelfBooks);
     }
 
     updateBook = (book, shelf) => {
@@ -107,6 +114,7 @@ class Search extends React.Component {
                                           book={this.checkBooks(book)}
                                           shelfCategories={categories}
                                           updateBook={this.updateBook}
+                                          updateShelf={(newShelf) => this.setState({books: newShelf})}
                                           index={z}/>
                                 ))
                             ) : this.state.error.length > 0 && ( <h1> No results</h1>)}
@@ -118,5 +126,12 @@ class Search extends React.Component {
         )
     }
 }
+
+Search.propTypes = {
+    shelfBooks: PropTypes.array,
+    updatedShelf: PropTypes.func,
+
+};
+
 
 export default Search;
