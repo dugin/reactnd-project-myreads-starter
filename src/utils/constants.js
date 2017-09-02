@@ -12,3 +12,5 @@ export const categories = [
         type: 'read',
         color: '#15c26b'
     }];
+
+export const ratings = ['terrible!', ' bad', 'OK', 'good', 'awesome!'];

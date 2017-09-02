@@ -1,26 +1,37 @@
 import firebase from 'firebase';
+import {increaseRatingObj} from '../utils/utils'
 
-export const setRating = (id, rating) => {
+export const setRating = (id, ratingObj) => {
     const ratingsRef = firebase.database().ref(`ratings/${id}`);
-    const reviewsRef = firebase.database().ref(`reviews/${id}`);
 
-    ratingsRef.transaction((currentData) => {
-        if (!currentData)
-            return {total: rating.rate, amount: 1};
-        else
-            return {total: currentData.total + rating.rate, amount: currentData.amount + 1};
+      return ratingsRef.set(ratingObj)
+            .then(() => Promise.resolve(ratingObj));
+};
 
-    }, (error, committed, snapshot) => {
-        if (error) {
-            console.log('Transaction failed abnormally!', error);
-        } else if (!committed) {
-            console.log('We aborted the transaction (because ada already exists).');
-        } else {
-            console.log('User ada added!');
+export const increaseRating = (id, newRating) => {
+    const ratingsRef = firebase.database().ref(`ratings/${id}`);
 
-            reviewsRef.push(rating);
-        }
+    return new Promise((resolve, reject) => {
+        ratingsRef.transaction((currentData) => {
+            if (!currentData)
+                return {averageRating: newRating, ratingsCount: 1};
+            else
+                return increaseRatingObj(currentData, newRating);
 
-    });
+        }, (error, committed, snapshot) => {
+            if (error) {
+                reject('Transaction failed abnormally!', error)
+            } else if (!committed) {
+                reject('We aborted the transaction (because ada already exists).');
+            }
+            resolve(snapshot.val());
+        });
+    })
+};
 
-}
+export const findRating = (id) => {
+    const ratingsRef = firebase.database().ref(`ratings/${id}`);
+    return ratingsRef.once("value");
+};
+
+

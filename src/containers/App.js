@@ -10,11 +10,15 @@ class BooksApp extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {route: window.location.pathname, shelfBooks:[]};
+        this.state = {route: window.location.pathname, shelfBooks:[] ,shouldGetRating: true};
 
         this.props.history.listen((location, action) => {
             this.setState({route: location.pathname})
         });
+    }
+
+    componentWillReceiveProps(nextProps) {
+      this.setState({shouldGetRating: false});
     }
 
     render() {
@@ -25,7 +29,7 @@ class BooksApp extends React.Component {
                     <Books
                         shelfBooks={(books) => this.setState({shelfBooks: books})}
                         updatedShelf={this.state.shelfBooks}
-
+                        shouldGetRating={this.state.shouldGetRating}
                     />
                 )}/>
                 <Route path="/search" render={()=>(

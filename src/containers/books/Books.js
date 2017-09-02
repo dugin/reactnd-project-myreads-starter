@@ -12,10 +12,11 @@ class Books extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {books: [], isLoading: true};
+        this.state = {books: [], isLoading: true, shouldGetRating: true};
     }
 
     componentDidMount() {
+
         if (!this.props.updatedShelf || this.props.updatedShelf.length === 0)
             this.getAllBooks();
 
@@ -28,6 +29,10 @@ class Books extends React.Component {
         this.props.shelfBooks(val);
     }
 
+    componentWillReceiveProps(){
+        this.setState({shouldGetRating: false});
+    }
+
     getAllBooks = () => {
         BooksAPI.getAll()
             .then(val => {
@@ -35,16 +40,32 @@ class Books extends React.Component {
             });
     };
 
-    updateBook = (book, shelf) => {
+    updateShelf = (book, shelf) => {
+
         BooksAPI.update(book, shelf)
             .then(() => {
 
-                book.shelf = shelf;
-
                 this.setState(state => ({
-                    books: state.books.map(b => b.id === book.id ? book : b)
-                }));
+                    books: state.books.map(b => b.id === book.id ? {...b, shelf} : b)
+                }), () => {
+                    this.props.shelfBooks(this.state.books);
+                });
             })
+    };
+
+    updateRating = (book, rating) => {
+
+        this.setState(state => ({
+            books: state.books.map(b => {
+                if (b.id === book.id) {
+                    b.averageRating = rating.averageRating;
+                    b.ratingsCount = rating.ratingsCount;
+                }
+                return b;
+            })
+        }), () => {
+            this.props.shelfBooks(this.state.books);
+        });
     };
 
     render() {
@@ -69,7 +90,9 @@ class Books extends React.Component {
                                                 <Book key={z}
                                                       book={book}
                                                       shelfCategories={categories}
-                                                      updateBook={this.updateBook}
+                                                      updateShelf={this.updateShelf}
+                                                      updateRating={this.updateRating}
+                                                      shouldGetRating={this.state.shouldGetRating}
                                                       index={z}/>
                                             ))}
                                     </div>
@@ -88,6 +111,7 @@ class Books extends React.Component {
 Books.propTypes = {
     shelfBooks: PropTypes.func,
     updatedShelf: PropTypes.array,
+    shouldGetRating: PropTypes.bool
 };
 
 export default Books;

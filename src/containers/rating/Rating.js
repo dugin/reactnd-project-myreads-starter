@@ -1,11 +1,13 @@
 import React from 'react';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import {Modal, ModalHeader, ModalBody} from 'reactstrap';
 import PropTypes from 'prop-types';
 import StarRatingComponent from 'react-star-rating-component';
 import './Rating.css';
-import moment from 'moment';
-import {setRating} from "../../api/RatingFirebase";
-import serializeForm from 'form-serialize';
+import {increaseRating, setRating, findRating} from "../../api/RatingFirebase";
+import {ratings} from "../../utils/constants"
+
+import {increaseRatingObj} from "../../utils/utils";
+const spinner = require('../../assets/icons/spinner.svg');
 
 
 class Rating extends React.Component {
@@ -13,10 +15,12 @@ class Rating extends React.Component {
         super(props);
         this.state = {
             modal: true,
-            rating: -1
+            rating: -1,
+            isSaving: false
         };
         this.toggle = this.toggle.bind(this);
     }
+
     toggle() {
         this.setState({
             modal: !this.state.modal
@@ -25,46 +29,58 @@ class Rating extends React.Component {
     }
 
     onStarClick(nextValue, prevValue, name) {
+        console.log(nextValue)
         this.setState({rating: nextValue});
     }
 
-    onReview = (e) => {
-        e.preventDefault();
-        const values = serializeForm(e.target, {hash: true});
+    onReview = () => {
+        const ratingObj = {averageRating: this.props.book.averageRating, ratingsCount: this.props.book.ratingsCount};
 
-        values.createdAt = moment().toJSON();
-        values.rate = this.state.rating;
-        values.name =  values.name || 'anonymous';
+        this.setState({isSaving: true});
 
-        setRating(this.props.book.id, values);
-        this.toggle();
+        findRating(this.props.book.id)
+            .then(snapshot => {
+                const resp = snapshot.val();
 
+                if (ratingObj.averageRating && ratingObj.averageRating && !resp) {
+                    const increasedRating = increaseRatingObj(ratingObj, this.state.rating);
+                    return setRating(this.props.book.id, increasedRating);
+                }
+                else
+                    return increaseRating(this.props.book.id, this.state.rating);
+            })
+            .then(resp => {
+                this.setState({isSaving: false});
+                this.props.onRating(resp);
+                this.toggle();
+
+            });
     };
 
     render() {
         return (
-            <div >
+            <div>
                 <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
                     <ModalHeader toggle={this.toggle}>{this.props.book.title}</ModalHeader>
                     <ModalBody>
                         <div className="rating-wrapper">
-                        <StarRatingComponent
-                            name="app5"
-                            starColor="#ffb400"
-                            emptyStarColor="#ffb400"
-                            onStarClick={this.onStarClick.bind(this)}
-                            renderStarIcon={(index, value) => {
-                                return <span className={index <= value ? 'fa fa-star' : 'fa fa-star-o'} />;
-                            }}
-                            renderStarIconHalf={() => <span className="fa fa-star-half-full" />}
-                        />
+                            <StarRatingComponent
+                                name="app5"
+                                starColor="#ffb400"
+                                emptyStarColor="#ffb400"
+                                onStarClick={this.onStarClick.bind(this)}
+                                value={this.state.rating}
+                                renderStarIcon={(index, value) => {
+                                    return <span className={index <= value ? 'fa fa-star' : 'fa fa-star-o'}/>;
+                                }}
+                                renderStarIconHalf={() => <span className="fa fa-star-half-full"/>}
+                            />
+                            <p className="rating-msg"> {this.state.rating !== -1 && ratings[this.state.rating - 1]}</p>
                         </div>
-                        <form onSubmit={this.onReview}>
-                            <input type="text" name="name" className="form-control" placeholder="Your name"/>
-                            <input type="text" name="title" className="form-control" placeholder="Review Title"/>
-                            <textarea name="text"  className="form-control" placeholder="Review text" rows="4" cols="50"/>
-                            <button className="btn btn-primary">Save</button>
-                        </form>
+
+                        <button disabled={this.state.rating === -1 || this.state.isSaving} onClick={() => this.onReview()}
+                                className="btn btn-primary"> {this.state.isSaving? (<img src={spinner} alt=""/>) : (<span>Save</span>) }
+                        </button>
                     </ModalBody>
                 </Modal>
             </div>
@@ -75,6 +91,7 @@ class Rating extends React.Component {
 Rating.propTypes = {
     book: PropTypes.object.isRequired,
     onCloseModal: PropTypes.func.isRequired,
+    onRating: PropTypes.func.isRequired
 };
 
 export default Rating;
