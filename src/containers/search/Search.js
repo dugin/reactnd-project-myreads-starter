@@ -1,7 +1,7 @@
 import React from 'react';
 import './Search.css';
 import Book from "../book/Book";
-import Loader from '../../components/loader/Loader'
+import Loader from '../../components/loader/Loader';
 import * as BooksAPI from "../../api/BooksAPI";
 import {categories} from "../../utils/constants";
 import debounce from 'lodash/debounce';
@@ -27,7 +27,7 @@ class Search extends React.Component {
     }
 
     checkBooks = (book) => {
-        return alterBookShelf(book, this.shelfBooks)
+        return alterBookShelf(book, this.shelfBooks);
     };
 
     componentWillMount() {
@@ -37,7 +37,7 @@ class Search extends React.Component {
 
     onTyping = (e) => {
         if (e.target.value.length > 0)
-            this.onSearch(e.target.value)
+            this.onSearch(e.target.value);
     };
 
     onSearch = (val) => {
@@ -49,19 +49,19 @@ class Search extends React.Component {
     updateRating = (book, rating) => {
         let isOnShelf = isBookOnArray(book.id, this.shelfBooks);
 
-        if (typeof isOnShelf === 'number') {
+        if (isOnShelf > -1) {
             this.shelfBooks[isOnShelf].averageRating = rating.averageRating;
             this.shelfBooks[isOnShelf].ratingsCount = rating.ratingsCount;
         }
 
         this.setState(state => ({
             books: state.books.map(b => {
-            if (b.id === book.id) {
-                b.averageRating = rating.averageRating;
-                b.ratingsCount = rating.ratingsCount;
-            }
-            return b;
-        }),
+                if (b.id === book.id) {
+                    b.averageRating = rating.averageRating;
+                    b.ratingsCount = rating.ratingsCount;
+                }
+                return b;
+            }),
         }));
 
     };
@@ -93,8 +93,13 @@ class Search extends React.Component {
     getBooks(query) {
         BooksAPI.search(query)
             .then(response => {
-                response.error ? this.setState({books: [], error: response.error}) : this.setState({books: response});
-                this.setState({isLoading: false});
+                if (response.error)
+                    throw new Error(response.error);
+
+                this.setState({isLoading: false, books: response});
+            })
+            .catch(error => {
+                this.setState({isLoading: false, books: [], error: error.message})
             })
     }
 

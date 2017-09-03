@@ -1,10 +1,10 @@
-import React from 'react'
-import './App.css'
+import React from 'react';
+import './App.css';
 import Header from "./../components/header/Header";
 import Footer from "./../components/footer/Footer";
 import Books from "./books/Books";
 import Search from './search/Search';
-import {withRouter, Route} from 'react-router-dom'
+import {withRouter, Route} from 'react-router-dom';
 
 class BooksApp extends React.Component {
 

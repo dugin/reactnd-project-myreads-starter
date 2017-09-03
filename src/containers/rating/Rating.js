@@ -29,7 +29,6 @@ class Rating extends React.Component {
     }
 
     onStarClick(nextValue, prevValue, name) {
-        console.log(nextValue)
         this.setState({rating: nextValue});
     }
 
